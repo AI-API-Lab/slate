@@ -3,7 +3,6 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
   - python
   - javascript
 
@@ -20,226 +19,219 @@ code_clipboard: true
 
 meta:
   - name: description
-    content: Documentation for the Kittn API
+    content: Documentation for the API
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the ... API. You can use the endpoints in this API to solve a different set of AI related challenged, espcially NLP task using the state-of-the-art machine learning models.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+At  the moment we offer the followings:
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+*  Interview Assistant: a service for generating questions duing an interview session.
+*  Email/SMS generator: a service for creating various types of emails/SMSes in the HR context.  
 
-# Authentication
 
-> To authorize, use this code:
+# Interview Assistant
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+This endpoint creates three questions given a set of inputs.
+## Interview Questions
 
 ```python
-import kittn
+import requests
 
-api = kittn.authorize('meowmeowmeow')
+headers = {
+    'x-api-key': '{apikey}',
+    'content-type': 'application/x-www-form-urlencoded',
+}
+
+with open('interview_questions_body.json') as f:
+    data = f.read().replace('\n', '')
+
+response = requests.post('{service_url}', headers=headers, data=data)
 ```
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
+curl -XPOST {service_url} -H "x-api-key: {apikey}" -d @interview_questions_body.json
 ```
 
 ```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
+fetch('{service_url}', {
+    method: 'POST',
+    headers: {
+        'x-api-key': '{apikey}',
+        'content-type': 'application/x-www-form-urlencoded'
+    },
+    body: '@interview_questions_body.json'
+});
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> The above command returns JSON structured like this:
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
+```json
+{"suggested_questions": 
+  [
+  "Is a degree in Mathematics or Computer Science required for Data Science?", 
+  "What is the difference  between Data Scientist and Data Engineer?", 
+  "What is the difference between a data scientist and a statistics or computer science major?"
+  ], 
+  "prompt": "Create a list of at least three technical questions for my interview with a data scientist given these following keywords:  mathematics, statistics, or computer science. They are also often skilled in programming languages such as Python or R. A data scientist typically has a graduate degree in statistics, or computer science.,\n\nThe role of a data scientist is to analyze data. They are responsible for taking data and turning it into information that can be used to make decisions. They typically have a background in mathematics,\n    questions:\n    1.\n    2.\n    3\n    4. \n    ", "error": null, "error_code": null, "company_member_id_hash": "c40f14664528a26ad1e9415ddf3a9a9248c0d71a5108b50111bbe8e5a82b0b3405cda50069abab9268ef528c468aca232310babef455c83b6caed3a9e32864af", "number_of_tokens": 324}
+```
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>{service_url}</code> and <code>{apikey}</code> with the url of the service and your personal API key.
 </aside>
 
-# Kittens
+### Body Parameters
 
-## Get All Kittens
+key  | optional | Description
+------- | ---------- | ----------
+type |  No | type of the functionality to be used, for the his endpoint the value must be set to `interview_questions`
+data | No | a json object containing the input parameters 
 
-```ruby
-require 'kittn'
+### Data 
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+key | type | optional | Description
+------- |------- | ---------- | ----------
+company_member_id |  integer | No | an integer depicting the user id of the customer using this service 
+job_title | string | No | job title of the open position
+role | string | Yes | role description of the job
+responsibilities | string | Yes | responsibility description of the job
+requirements | string | Yes | requirements description of the job
+summary | string | Yes | summary description of the job
+questions_to_exclude | array of strings | Yes | a list of questions to be excluded if they are generated by the model
+
+
+
+# Email/SMS Assistant
+
+This endpoint creates emails and SMS in different contexts given a set of inputs.
+
+## SMS Generation
 
 ```python
-import kittn
+import requests
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
+headers = {
+    'x-api-key': '{apikey}',
+    'content-type': 'application/x-www-form-urlencoded',
+}
+
+with open('recruitmet_sms_body.json') as f:
+    data = f.read().replace('\n', '')
+
+response = requests.post('{service_url}', headers=headers, data=data)
 ```
 
 ```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
+curl -XPOST {service_url} -H "x-api-key: {apikey}" -d @recruitmet_sms_body.json
 ```
 
 ```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+fetch('{service_url}', {
+    method: 'POST',
+    headers: {
+        'x-api-key': '{apikey}',
+        'content-type': 'application/x-www-form-urlencoded'
+    },
+    body: '@recruitmet_sms_body.json'
+});
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
+{"suggested_sms": 
+"\n\nHi, \nI'm sorry to say that we are not going to be able to offer you a position at this time. I hope you will continue your search and apply again in the future. \nBest, \nRecruiter", 
+"text_analytics": {"document_tones": 
+[{"description": "A person's degree of inhibition.", "color": "#0BA87B", "title": "Tentative", "rate": 0.751891, "sentences": [{"sentence": "I hope you will continue your search and apply again in the future.", "rate": 0.716301}]}]
+, "sentences": 
+[{"sentence_id": 0, "text": "Hi, ", "tones": []}, {"sentence_id": 1, "text": "I'm sorry to say that we are not going to be able to offer you a position at this time.", "tones": []}, {"sentence_id": 2, "text": "I hope you will continue your search and apply again in the future.", 
+"tones": [{"tone_id": "tentative", "color": "#0BA87B", "description": "A person's degree of inhibition.", "title": "Tentative", "rate": 0.716301}]}, {"sentence_id": 3, "text": "Best, ", "tones": []}, {"sentence_id": 4, "text": "Recruiter", "tones": []}],
+ "flesch-kincaid_grade_level": 6.8, "flesch_reading_ease": 78.59, "score_explanation": "Fairly easy for most adults to read and understand.", "formality": {"formal": 0.373, "informal": 0.627}, "word_count": 37, "estimate_read_time": "00:00:09", "overall_score": 77}, "prompt": "Write a SMS as a recruiter to a job seeker. Include the information in the following bullet points as much as possible: \n- writing tone: formal\n- subject of the email: rejection\nSMS:", "error": null, "error_code": null, "company_member_id_hash": "c40f14664528a26ad1e9415ddf3a9a9248c0d71a5108b50111bbe8e5a82b0b3405cda50069abab9268ef528c468aca232310babef455c83b6caed3a9e32864af", "number_of_tokens": 95}
 ```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+<aside class="notice">
+You must replace <code>{service_url}</code> and <code>{apikey}</code> with the url of the service and your personal API key.
 </aside>
 
-## Get a Specific Kitten
+### Body Parameters
 
-```ruby
-require 'kittn'
+key  | optional | Description
+------- | ---------- | ----------
+type |  No | type of the functionality to be used, for the his endpoint the value must be set to `recruitment_sms`
+data | No | a json object containing the input parameters 
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
+### Data 
+
+key | type | optional | Description
+------- |------- | ---------- | ----------
+company_member_id |  integer | No | an integer depicting the user id of the customer using this service 
+tone | string | No | tone of the SMS
+intention | string |No | intension of the SMS
+keywords | array of strings | Yes | keywords that could be used in the SMS
+user_inputs | array of strings | Yes | use specified inputs
+benefits | array of strings | Yes | a list of benefit
+
+
+## SMS Generation
 
 ```python
-import kittn
+import requests
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
+headers = {
+    'x-api-key': '{apikey}',
+    'content-type': 'application/x-www-form-urlencoded',
+}
+
+with open('recruitmet_email_body.json') as f:
+    data = f.read().replace('\n', '')
+
+response = requests.post('{service_url}', headers=headers, data=data)
 ```
 
 ```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
+curl -XPOST {service_url} -H "x-api-key: {apikey}" -d @recruitmet_email_body.json
 ```
 
 ```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+fetch('{service_url}', {
+    method: 'POST',
+    headers: {
+        'x-api-key': '{apikey}',
+        'content-type': 'application/x-www-form-urlencoded'
+    },
+    body: '@recruitmet_email_body.json'
+});
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
+{"suggested_email": "\n\nDear \n\nI regret to inform you that your application for the position of \n(position) has been rejected. We received many highly qualified applicants, and while you are a strong candidate, we have decided to go with someone else. Thank you for your interest and best of luck in your job search. \nSincerely, \n(name)",
+"text_analytics": {"document_tones":
+[{"description": "A person's degree of inhibition.", "color": "#0BA87B", "title": "Tentative", "rate": 0.60858, "sentences": [{"sentence": "Thank you for your interest and best of luck in your job search.", "rate": 0.716301}]}, {"description": "A person's reasoning and analytical attitude about things.", "color": "#6A1B9A", "title": "Analytical", "rate": 0.825566, "sentences": [{"sentence": "I regret to inform you that your application for the position of ", "rate": 0.842108}, {"sentence": "We received many highly qualified applicants, and while you are a strong candidate, we have decided to go with someone else.", "rate": 0.746925}]}], "sentences": [{"sentence_id": 0, "text": "Dear ", "tones": {"sentence_id": 1, "text": "", "tones": []},
+{"sentence_id": 2, "text": "I regret to inform you that your application for the position of ", "tones": [{"tone_id": "analytical", "color": "#6A1B9A", "description": "A person's reasoning and analytical attitude about things.", "title": "Analytical", "rate": 0.842108}]}, {"sentence_id": 3, "text": "(position) has been rejected.", "tones": []}, {"sentence_id": 4, "text": "We received many highly qualified applicants, and while you are a strong candidate, we have decided to go with someone else.", "tones": [{"tone_id": "analytical", "color": "#6A1B9A", "description": "A person's reasoning and analytical attitude about things.", "title": "Analytical", "rate": 0.746925}]}, {"sentence_id": 5, "text": "Thank you for your interest and best of luck in your job search.", "tones": [{"tone_id": "joy", "color": "#E91E63", "description": "Joy or happiness has shades of enjoyment, satisfaction and pleasure. There is a sense of well-being, inner peace, love, safety and contentment.", "title": "Joy", "rate": 0.75627}, {"tone_id": "tentative", "color": "#0BA87B", "description": "A person's degree of inhibition.", "title": "Tentative", "rate": 0.716301}]}, {"sentence_id": 6, "text": "Sincerely, ", "tones": []}, {"sentence_id": 7, "text": "(name)", "tones": []}], "flesch-kincaid_grade_level": 9.0, "flesch_reading_ease": 61.97, "score_explanation": "Easy to understand. Easily understood by 13- to 15-year-old students. Easy for most adults to read", "formality": {"formal": 0.434, "informal": 0.566}, "word_count": 53, "estimate_read_time": "00:00:13", "overall_score": 89},
+"prompt": "Write an email as a recruiter to a job seeker. Include the information in the following bullet points as much as possible: \n- writing tone: formal\n- subject of the email: rejection of the applied job position\nEmail:", "error": null, "error_code": null, "company_member_id_hash": "c40f14664528a26ad1e9415ddf3a9a9248c0d71a5108b50111bbe8e5a82b0b3405cda50069abab9268ef528c468aca232310babef455c83b6caed3a9e32864af", "number_of_tokens": 123, "subject_line": "Rejection"}
 ```
+<aside class="notice">
+You must replace <code>{service_url}</code> and <code>{apikey}</code> with the url of the service and your personal API key.
+</aside>
 
-This endpoint retrieves a specific kitten.
+### Body Parameters
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+key  | optional | Description
+------- | ---------- | ----------
+type |  No | type of the functionality to be used, for the his endpoint the value must be set to `recruitment_email`
+data | No | a json object containing the input parameters 
 
-### HTTP Request
+### Data 
 
-`GET http://example.com/kittens/<ID>`
+key | type | optional | Description
+------- |------- | ---------- | ----------
+company_member_id |  integer | No | an integer depicting the user id of the customer using this service 
+tone | string | No | tone of the email
+intention | string |No | intension of the email
+keywords | array of strings | Yes | keywords that could be used in the email
+user_inputs | array of strings | Yes | use specified inputs
+benefits | array of strings | Yes | a list of benefit
 
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
 
